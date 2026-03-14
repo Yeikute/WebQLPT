@@ -1,0 +1,76 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12 d-flex align-items-center justify-content-between">
+            <h2 class="mb-0">Bảng điều khiển</h2>
+            <small class="text-muted">Tổng quan hệ thống quản lý phòng trọ</small>
+        </div>
+    </div>
+
+    <div class="row dashboard-cards g-3">
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card p-3">
+                <div class="d-flex align-items-center">
+                    <div class="me-3 display-6 text-primary"><i class="bi bi-people-fill"></i></div>
+                    <div>
+                        <div class="text-muted small">Khách thuê</div>
+                        <div class="h4 mb-0">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card p-3">
+                <div class="d-flex align-items-center">
+                    <div class="me-3 display-6 text-success"><i class="bi bi-building"></i></div>
+                    <div>
+                        <div class="text-muted small">Phòng trọ</div>
+                        <div class="h4 mb-0">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card p-3">
+                <div class="d-flex align-items-center">
+                    <div class="me-3 display-6 text-warning"><i class="bi bi-receipt"></i></div>
+                    <div>
+                        <div class="text-muted small">Hóa đơn</div>
+                        <div class="h4 mb-0">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card p-3">
+                <div class="d-flex align-items-center">
+                    <div class="me-3 display-6 text-danger"><i class="bi bi-chat-left-text"></i></div>
+                    <div>
+                        <div class="text-muted small">Đánh giá</div>
+                        <div class="h4 mb-0">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-lg-8">
+            <div class="card p-3">
+                <h5>Báo cáo gần đây</h5>
+                <p class="text-muted">Hiển thị các hoạt động và thông báo hệ thống ở đây.</p>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card p-3">
+                <h5>Thông báo</h5>
+                <ul class="list-unstyled mb-0">
+                    <li class="py-2 border-bottom">Không có thông báo mới</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

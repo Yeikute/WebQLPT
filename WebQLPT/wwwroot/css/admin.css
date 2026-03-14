@@ -1,0 +1,24 @@
+/* Admin dashboard custom styles */
+:root{
+  --sidebar-width: 220px;
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #e9ecef;
+}
+
+.app-root{min-height:100vh}
+.sidebar{width:var(--sidebar-width);min-height:100vh;position:fixed;left:0;top:0;padding-top:1rem}
+.content{margin-left:var(--sidebar-width)}
+.sidebar .nav-link{color:#495057;padding:.75rem 1rem}
+.sidebar .nav-link:hover{background:#f8f9fa;border-radius:.375rem}
+.topbar{height:64px;display:flex;align-items:center}
+.topbar .form-control{background:#f8f9fa;border:1px solid #e9ecef}
+
+/* Responsive */
+@media (max-width: 767.98px){
+  .sidebar{position:relative;width:100%;min-height:auto}
+  .content{margin-left:0}
+}
+
+/* Simple cards */
+.dashboard-cards .card{border:0;border-radius:.75rem;box-shadow:0 6px 18px rgba(23,23,23,0.06)}
+
