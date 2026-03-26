@@ -18,10 +18,10 @@
             </div>
             <nav class="nav flex-column p-2">
                 <a class="nav-link d-flex align-items-center" asp-controller="Home" asp-action="Index"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
-                <a class="nav-link d-flex align-items-center" href="#"><i class="bi bi-person-fill me-2"></i>Khách thuê</a>
-                <a class="nav-link d-flex align-items-center" href="#"><i class="bi bi-building me-2"></i>Phòng trọ</a>
-                <a class="nav-link d-flex align-items-center" href="#"><i class="bi bi-house-fill me-2"></i>Chủ trọ</a>
-                <a class="nav-link d-flex align-items-center" href="#"><i class="bi bi-pencil-square me-2"></i>Đăng tin</a>
+                <a class="nav-link d-flex align-items-center" asp-controller="KhachThues" asp-action="Index"><i class="bi bi-person-fill me-2"></i>Khách thuê</a>
+                <a class="nav-link d-flex align-items-center" asp-controller="PhongTroes" asp-action="Index"><i class="bi bi-building me-2"></i>Phòng trọ</a>
+                <a class="nav-link d-flex align-items-center" asp-controller="ChuTroes" asp-action="Index"><i class="bi bi-house-fill me-2"></i>Chủ trọ</a>
+                <a class="nav-link d-flex align-items-center" asp-controller="DangTins" asp-action="Index"><i class="bi bi-pencil-square me-2"></i>Đăng tin</a>
                 <a class="nav-link d-flex align-items-center" href="#"><i class="bi bi-chat-left-text me-2"></i>Đánh giá</a>
                 <a class="nav-link d-flex align-items-center" href="#"><i class="bi bi-receipt me-2"></i>Hóa đơn</a>
                 <a class="nav-link d-flex align-items-center" href="#"><i class="bi bi-envelope me-2"></i>Liên hệ</a>
@@ -30,14 +30,30 @@
         <div class="content flex-fill d-flex flex-column">
             <header class="topbar bg-white border-bottom">
                 <div class="container-fluid d-flex align-items-center justify-content-between">
-                    <form class="d-flex w-50" role="search">
-                        <input class="form-control form-control-sm me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
-                    </form>
-                    <div class="d-flex align-items-center">
+                    @{
+                        var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+                    }
+                    @if (controller == "Home")
+                        {
+                            <form asp-controller="Search" asp-action="Index" method="get" class="d-flex w-50">
+                                <input class="form-control form-control-sm me-2"
+                                type="search"
+                                name="keyword"
+                                placeholder="Tìm kiếm..."
+                                aria-label="Search"
+                                required>
+                                <button class="btn btn-outline-primary btn-sm" type="submit">
+                                    🔍
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <div></div>
+                        }
+                        <div class="d-flex align-items-center">
                         <div class="me-3 text-muted small">Xin chào, Admin</div>
-                        <div>
                             <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-person-circle"></i></button>
-                        </div>
                     </div>
                 </div>
             </header>
@@ -53,11 +69,7 @@
         </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - WebQLPT - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+   
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

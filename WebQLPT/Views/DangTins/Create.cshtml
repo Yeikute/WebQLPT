@@ -1,0 +1,57 @@
+﻿@model WebQLPT.Models.DangTin
+
+@{
+    ViewData["Title"] = "Đăng tin";
+}
+
+<h2>Đăng tin phòng trọ</h2>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group mb-2">
+                <label asp-for="TieuDe"></label>
+                <input asp-for="TieuDe" class="form-control" placeholder="Nhập tiêu đề..." />
+                <span asp-validation-for="TieuDe" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="NoiDung"></label>
+                <textarea asp-for="NoiDung" class="form-control" rows="4" placeholder="Mô tả chi tiết..."></textarea>
+                <span asp-validation-for="NoiDung" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="Gia"></label>
+                <input asp-for="Gia" class="form-control" placeholder="VD: 1500000" />
+                <span asp-validation-for="Gia" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="HinhAnh"></label>
+                <input asp-for="HinhAnh" class="form-control" placeholder="Link ảnh..." />
+                <span asp-validation-for="HinhAnh" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label>Phòng trọ</label>
+                <select asp-for="PhongTroId" class="form-control" asp-items="ViewBag.PhongTroId"></select>
+            </div>
+            <div class="form-group mb-3">
+                <label>Chủ trọ</label>
+                <select asp-for="ChuTroId" class="form-control" asp-items="ViewBag.ChuTroId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Đăng tin" class="btn btn-success" />
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

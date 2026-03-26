@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Kết quả tìm kiếm";
+}
+
+<h2>Kết quả tìm kiếm: "@ViewBag.Keyword"</h2>
+
+<hr />
+
+<h4>Phòng trọ</h4>
+<table class="table table-bordered">
+    <tr>
+        <th>Tên phòng</th>
+        <th>Giá</th>
+    </tr>
+    @foreach (var item in ViewBag.PhongTro)
+    {
+        <tr>
+            <td>@item.TenPhong</td>
+            <td>@item.Gia</td>
+        </tr>
+    }
+</table>
+
+<h4>Khách thuê</h4>
+<table class="table table-bordered">
+    <tr>
+        <th>Tên khách</th>
+        <th>Phòng</th>
+    </tr>
+    @foreach (var item in ViewBag.KhachThue)
+    {
+        <tr>
+            <td>@item.TenKhach</td>
+            <td>@item.PhongTro?.TenPhong</td>
+        </tr>
+    }
+</table>
+
+<h4>Chủ trọ</h4>
+<table class="table table-bordered">
+    <tr>
+        <th>Tên chủ</th>
+        <th>SĐT</th>
+    </tr>
+    @foreach (var item in ViewBag.ChuTro)
+    {
+        <tr>
+            <td>@item.TenChuTro</td>
+            <td>@item.SoDienThoai</td>
+        </tr>
+    }
+</table>

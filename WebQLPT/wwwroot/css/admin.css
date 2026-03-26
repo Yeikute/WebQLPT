@@ -22,3 +22,17 @@
 /* Simple cards */
 .dashboard-cards .card{border:0;border-radius:.75rem;box-shadow:0 6px 18px rgba(23,23,23,0.06)}
 
+html, body {
+    height: 100%;
+}
+
+.content {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
