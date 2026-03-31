@@ -1,50 +1,79 @@
 ﻿@model WebQLPT.Models.PhongTro
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Thêm Phòng Trọ Mới";
 }
 
-<h1>Create</h1>
-
-<h4>PhongTro</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="TenPhong" class="control-label"></label>
-                <input asp-for="TenPhong" class="form-control" />
-                <span asp-validation-for="TenPhong" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Gia" class="control-label"></label>
-                <input asp-for="Gia" class="form-control" />
-                <span asp-validation-for="Gia" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TrangThai" class="control-label"></label>
-                <input asp-for="TrangThai" class="form-control" />
-                <span asp-validation-for="TrangThai" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MoTa" class="control-label"></label>
-                <input asp-for="MoTa" class="form-control" />
-                <span asp-validation-for="MoTa" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ChuTroId" class="control-label"></label>
-                <select asp-for="ChuTroId" class ="form-control" asp-items="ViewBag.ChuTroId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<div class="page-header">
+    <h1>🏠 Thêm Phòng Trọ Mới</h1>
+    <p>Nhập thông tin chi tiết cho phòng trọ mới</p>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="form-container" style="max-width: 600px;">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <div class="form-group">
+            <label asp-for="TenPhong">
+                Tên Phòng
+                <span class="required">*</span>
+            </label>
+            <input asp-for="TenPhong" class="form-control" placeholder="Ví dụ: Phòng A1, Phòng B2..." />
+            <span asp-validation-for="TenPhong" class="invalid-feedback"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Gia">
+                Giá Thuê (VNĐ)
+                <span class="required">*</span>
+            </label>
+            <input asp-for="Gia" class="form-control" type="number" step="1000" placeholder="Ví dụ: 3000000" />
+            <span asp-validation-for="Gia" class="invalid-feedback"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="TrangThai">
+                Trạng Thái
+                <span class="required">*</span>
+            </label>
+            <select asp-for="TrangThai" class="form-select">
+                <option value="">-- Chọn Trạng Thái --</option>
+                <option value="Trống">Trống</option>
+                <option value="Đã cho thuê">Đã cho thuê</option>
+                <option value="Bảo trì">Bảo trì</option>
+            </select>
+            <span asp-validation-for="TrangThai" class="invalid-feedback"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="MoTa">
+                Mô Tả
+                <span class="required">*</span>
+            </label>
+            <textarea asp-for="MoTa" class="form-control" placeholder="Nhập mô tả chi tiết về phòng trọ..."></textarea>
+            <span asp-validation-for="MoTa" class="invalid-feedback"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ChuTroId">
+                Chủ Trọ
+                <span class="required">*</span>
+            </label>
+            <select asp-for="ChuTroId" class="form-select" asp-items="ViewBag.ChuTroId">
+                <option value="">-- Chọn Chủ Trọ --</option>
+            </select>
+            <span asp-validation-for="ChuTroId" class="invalid-feedback"></span>
+        </div>
+
+        <div class="btn-form-group">
+            <button type="submit" class="btn-submit">
+                <i class="bi bi-plus-circle"></i> Thêm Phòng
+            </button>
+            <a asp-action="Index" class="btn-cancel">
+                <i class="bi bi-x-circle"></i> Hủy
+            </a>
+        </div>
+    </form>
 </div>
 
 @section Scripts {

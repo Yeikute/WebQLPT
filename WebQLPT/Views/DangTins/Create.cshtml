@@ -1,57 +1,279 @@
 ﻿@model WebQLPT.Models.DangTin
 
 @{
-    ViewData["Title"] = "Đăng tin";
+    ViewData["Title"] = "Đăng Tin Phòng Trọ";
 }
 
-<h2>Đăng tin phòng trọ</h2>
+<style>
+    .form-control.is-invalid,
+    .form-select.is-invalid {
+        border-color: #dc3545;
+        padding-right: calc(1.5em + 0.75rem);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath fill='%23dc3545' d='M5.8 3.6h.4v2.8h-.4z'/%3e%3ccircle cx='6' cy='9.2' r='.6' fill='%23dc3545'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
 
-<hr />
+    .invalid-feedback {
+        display: block;
+        color: #dc3545;
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+    }
 
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Create">
+    .alert-danger {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+        padding: 0.75rem 1.25rem;
+        margin-bottom: 1rem;
+        border-radius: 0.25rem;
+    }
+</style>
 
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group mb-2">
-                <label asp-for="TieuDe"></label>
-                <input asp-for="TieuDe" class="form-control" placeholder="Nhập tiêu đề..." />
-                <span asp-validation-for="TieuDe" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-2">
-                <label asp-for="NoiDung"></label>
-                <textarea asp-for="NoiDung" class="form-control" rows="4" placeholder="Mô tả chi tiết..."></textarea>
-                <span asp-validation-for="NoiDung" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-2">
-                <label asp-for="Gia"></label>
-                <input asp-for="Gia" class="form-control" placeholder="VD: 1500000" />
-                <span asp-validation-for="Gia" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-2">
-                <label asp-for="HinhAnh"></label>
-                <input asp-for="HinhAnh" class="form-control" placeholder="Link ảnh..." />
-                <span asp-validation-for="HinhAnh" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-2">
-                <label>Phòng trọ</label>
-                <select asp-for="PhongTroId" class="form-control" asp-items="ViewBag.PhongTroId"></select>
-            </div>
-            <div class="form-group mb-3">
-                <label>Chủ trọ</label>
-                <select asp-for="ChuTroId" class="form-control" asp-items="ViewBag.ChuTroId"></select>
-            </div>
+<div class="page-header">
+    <h1>📝 Đăng Tin Phòng Trọ Mới</h1>
+    <p>Chia sẻ phòng trọ của bạn với hàng ngàn khách hàng tiềm năng</p>
+</div>
+
+<div class="posts-container">
+    <div class="post-create-card">
+        <form asp-action="Create" method="post" enctype="multipart/form-data" id="createForm">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+
+            <!-- Thông tin cơ bản -->
             <div class="form-group">
-                <input type="submit" value="Đăng tin" class="btn btn-success" />
-                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+                <label asp-for="TieuDe" class="form-label">
+                    Tiêu Đề
+                    <span class="required">*</span>
+                </label>
+                <input asp-for="TieuDe" class="form-control" placeholder="Ví dụ: Phòng trọ 25m2 gần trường đại học, full nội thất" />
+                <span asp-validation-for="TieuDe" class="invalid-feedback"></span>
             </div>
 
+            <div class="form-group">
+                <label asp-for="NoiDung" class="form-label">
+                    Mô Tả Chi Tiết
+                    <span class="required">*</span>
+                </label>
+                <textarea asp-for="NoiDung" class="form-control" rows="5" placeholder="Nhập mô tả chi tiết về phòng trọ của bạn..."></textarea>
+                <span asp-validation-for="NoiDung" class="invalid-feedback"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Gia" class="form-label">
+                    Giá Thuê (VNĐ)
+                    <span class="required">*</span>
+                </label>
+                <input asp-for="Gia" class="form-control" type="number" step="100000" placeholder="Ví dụ: 3000000" />
+                <span asp-validation-for="Gia" class="invalid-feedback"></span>
+            </div>
+
+            <!-- Upload Ảnh -->
+            <div class="form-group">
+                <label class="form-label">
+                    Hình Ảnh (Tùy Chọn)
+                </label>
+                <div class="file-upload-wrapper">
+                    <input type="file" id="imageFile" name="imageFile" class="file-upload-input" accept="image/*" />
+                    <label for="imageFile" class="file-upload-label">
+                        <i class="bi bi-cloud-upload"></i>
+                        <span>Nhấp để chọn ảnh hoặc kéo thả ảnh vào đây</span>
+                    </label>
+                </div>
+                <div id="previewContainer" class="file-upload-preview" style="display: none;">
+                    <img id="previewImage" src="" alt="Xem trước">
+                </div>
+            </div>
+
+            <!-- Chọn phòng trọ & chủ trọ -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="form-group">
+                    <label asp-for="PhongTroId" class="form-label">
+                        Phòng Trọ
+                        <span class="required">*</span>
+                    </label>
+                    <select asp-for="PhongTroId" class="form-select" asp-items="ViewBag.PhongTroId">
+                        <option value="">-- Chọn Phòng Trọ --</option>
+                    </select>
+                    <span asp-validation-for="PhongTroId" class="invalid-feedback"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ChuTroId" class="form-label">
+                        Chủ Trọ
+                        <span class="required">*</span>
+                    </label>
+                    <select asp-for="ChuTroId" class="form-select" asp-items="ViewBag.ChuTroId">
+                        <option value="">-- Chọn Chủ Trọ --</option>
+                    </select>
+                    <span asp-validation-for="ChuTroId" class="invalid-feedback"></span>
+                </div>
+            </div>
+
+            <!-- Nút action -->
+            <div class="btn-form-group">
+                <button type="submit" class="btn-submit">
+                    <i class="bi bi-send"></i> Đăng Tin Ngay
+                </button>
+                <a asp-action="Index" class="btn-cancel">
+                    <i class="bi bi-x-circle"></i> Hủy
+                </a>
+            </div>
         </form>
+    </div>
+
+    <!-- Preview Post -->
+    <div id="postPreview" style="display: none;">
+        <div class="post-card">
+            <div class="post-header">
+                <div class="post-author-info">
+                    <div class="post-author-avatar">👤</div>
+                    <div class="post-author-details">
+                        <div class="post-author-name" id="previewAuthor">Chủ trọ</div>
+                        <div class="post-meta" id="previewDate">Vừa đăng</div>
+                    </div>
+                </div>
+            </div>
+            <div class="post-content">
+                <div class="post-title" id="previewTitle">Tiêu đề</div>
+                <div class="post-description" id="previewDesc">Mô tả</div>
+                <div id="previewImageContainer" class="post-image-container" style="display: none;">
+                    <img id="previewPostImage" src="" alt="Ảnh phòng trọ" class="post-image">
+                </div>
+                <div class="post-meta-info">
+                    <div class="post-meta-item">
+                        <div class="post-meta-label">Giá thuê</div>
+                        <div class="post-meta-value" id="previewPrice">0 VNĐ</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const imageInput = document.getElementById('imageFile');
+    const previewContainer = document.getElementById('previewContainer');
+    const previewImage = document.getElementById('previewImage');
+    const postPreview = document.getElementById('postPreview');
+    const previewPostImage = document.getElementById('previewPostImage');
+    const previewImageContainer = document.getElementById('previewImageContainer');
+    const createForm = document.getElementById('createForm');
+
+    // Drag and drop
+    const fileUploadLabel = document.querySelector('.file-upload-label');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        fileUploadLabel.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
     }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        fileUploadLabel.addEventListener(eventName, () => {
+            fileUploadLabel.style.background = 'rgba(59, 130, 246, 0.15)';
+            fileUploadLabel.style.borderColor = '#3b82f6';
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        fileUploadLabel.addEventListener(eventName, () => {
+            fileUploadLabel.style.background = 'rgba(59, 130, 246, 0.05)';
+            fileUploadLabel.style.borderColor = 'rgba(59, 130, 246, 0.3)';
+        });
+    });
+
+    fileUploadLabel.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        // Create a DataTransfer object to properly set files
+        const dataTransfer = new DataTransfer();
+        for (let i = 0; i < files.length; i++) {
+            dataTransfer.items.add(files[i]);
+        }
+        imageInput.files = dataTransfer.files;
+        handleFileSelect({ target: { files: files } });
+    });
+
+    imageInput.addEventListener('change', handleFileSelect);
+
+    function handleFileSelect(e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                alert('Vui lòng chọn file hình ảnh');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                previewImage.src = event.target.result;
+                previewContainer.style.display = 'block';
+
+                // Update post preview
+                previewPostImage.src = event.target.result;
+                previewImageContainer.style.display = 'block';
+                postPreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Update preview khi nhập text
+    document.getElementById('TieuDe').addEventListener('input', function () {
+        document.getElementById('previewTitle').textContent = this.value || 'Tiêu đề';
+    });
+
+    document.getElementById('NoiDung').addEventListener('input', function () {
+        document.getElementById('previewDesc').textContent = this.value || 'Mô tả';
+    });
+
+    document.getElementById('Gia').addEventListener('input', function () {
+        const price = this.value ? parseFloat(this.value).toLocaleString('vi-VN') + ' VNĐ' : '0 VNĐ';
+        document.getElementById('previewPrice').textContent = price;
+    });
+
+    document.getElementById('ChuTroId').addEventListener('change', function () {
+        const option = this.options[this.selectedIndex];
+        document.getElementById('previewAuthor').textContent = option.text || 'Chủ trọ';
+    });
+
+    // Add is-invalid class khi validation fail
+    const form = document.getElementById('createForm');
+    if (form) {
+        const inputs = form.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            const feedback = input.parentElement.querySelector('.invalid-feedback');
+            if (feedback && feedback.textContent.trim()) {
+                input.classList.add('is-invalid');
+            }
+        });
+    }
+});
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Disable validation for imageFile (optional field)
+        $(document).ready(function () {
+            const form = document.getElementById('createForm');
+            if (form) {
+                // Remove any validation rules for imageFile
+                const imageFileInput = document.getElementById('imageFile');
+                if (imageFileInput) {
+                    imageFileInput.removeAttribute('data-val');
+                    imageFileInput.removeAttribute('data-val-required');
+                }
+            }
+        });
+    </script>
 }

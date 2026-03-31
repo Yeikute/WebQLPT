@@ -19,17 +19,26 @@ namespace WebQLPT.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<DangTin>()
-                .HasOne(d => d.PhongTro)
-                .WithMany()
-                .HasForeignKey(d => d.PhongTroId)
-                .OnDelete(DeleteBehavior.NoAction);
+            // Configure DangTin entity
+            modelBuilder.Entity<DangTin>(entity =>
+            {
+                entity.Property(d => d.HinhAnh)
+                    .IsRequired(false)
+                    .HasColumnType("nvarchar(max)");
 
-            modelBuilder.Entity<DangTin>()
-                .HasOne(d => d.ChuTro)
-                .WithMany()
-                .HasForeignKey(d => d.ChuTroId)
-                .OnDelete(DeleteBehavior.NoAction);
+                entity.Property(d => d.Gia)
+                    .HasPrecision(18, 2);
+
+                entity.HasOne(d => d.PhongTro)
+                    .WithMany()
+                    .HasForeignKey(d => d.PhongTroId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(d => d.ChuTro)
+                    .WithMany()
+                    .HasForeignKey(d => d.ChuTroId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
         }
     }
 

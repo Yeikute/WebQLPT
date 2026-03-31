@@ -1,53 +1,53 @@
 ﻿@model WebQLPT.Models.DangTin
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Chi Tiết Tin";
 }
 
-<h1>Details</h1>
+<h1>📄 Chi Tiết Tin Đăng</h1>
 
 <div>
-    <h4>DangTin</h4>
+    <h4>Thông Tin Tin</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TieuDe)
+            Tiêu Đề
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.TieuDe)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NoiDung)
+            Nội Dung
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.NoiDung)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Gia)
+            Giá
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Gia)
+            @Model.Gia.ToString("N0") VNĐ
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.HinhAnh)
+            Hình Ảnh
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.HinhAnh)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NgayDang)
+            Ngày Đăng
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.NgayDang)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PhongTro)
+            Phòng Trọ
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.PhongTro.Id)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ChuTro)
+            Chủ Trọ
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ChuTro.Id)
@@ -55,6 +55,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">✏️ Chỉnh Sửa</a> |
+    <a asp-action="Index">← Quay Lại Danh Sách</a>
 </div>

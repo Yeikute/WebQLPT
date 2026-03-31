@@ -1,70 +1,327 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - WebQLPT</title>
+    <title>@ViewData["Title"] - Quản Lý Phòng Trọ</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/modern-theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/tables.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/forms.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/details.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/posts.css" asp-append-version="true" />
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #1e40af;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f0f4f9;
+            --surface: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f4f9 0%, #e8eef7 50%, #f5f3ff 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .app-root {
+            min-height: 100vh;
+            gap: 0;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(226, 232, 240, 0.5);
+            overflow-y: auto;
+            position: fixed;
+            height: 100vh;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
+            z-index: 1000;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.3);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.5);
+        }
+
+        .sidebar-header {
+            border-bottom: 1px solid var(--border);
+            padding: 1.75rem 1.25rem !important;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+        }
+
+        .sidebar-header .navbar-brand {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-header i {
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar .nav {
+            padding: 1.25rem 0.75rem !important;
+        }
+
+        .sidebar .nav-link {
+            color: var(--text-secondary);
+            padding: 0.75rem 1rem;
+            margin: 0.35rem 0;
+            border-radius: 0.75rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 3px;
+            height: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            transform: translateY(-50%);
+            transition: height 0.3s ease;
+            border-radius: 0 2px 2px 0;
+        }
+
+        .sidebar .nav-link:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
+            color: var(--primary);
+            transform: translateX(6px);
+        }
+
+        .sidebar .nav-link:hover::before {
+            height: 20px;
+        }
+
+        .sidebar .nav-link.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.35);
+            font-weight: 600;
+        }
+
+        .sidebar .nav-link.active::before {
+            height: 20px;
+            background: white;
+            opacity: 0;
+        }
+
+        .sidebar .nav-link i {
+            font-size: 1.15rem;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar .nav-link:hover i {
+            transform: scale(1.1);
+        }
+
+        .content {
+            margin-left: 280px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== TOPBAR ===== */
+        .topbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+            padding: 1.25rem 2rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .topbar .form-control {
+            border: 1.5px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 0.65rem 1.25rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+        }
+
+        .topbar .form-control:focus {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.05);
+            outline: none;
+        }
+
+        .topbar .form-control::placeholder {
+            color: #94a3b8;
+        }
+
+        .topbar .input-group {
+            width: 100%;
+        }
+
+        main {
+            flex: 1;
+            padding: 2.5rem;
+            overflow-y: auto;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            padding: 1.75rem 2rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: auto;
+            font-size: 0.9rem;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.5);
+        }
+    </style>
 </head>
 <body>
-    <div class="app-root d-flex">
-        <aside class="sidebar bg-white border-end">
-            <div class="sidebar-header p-3 d-flex align-items-center">
-                <a class="navbar-brand mb-0" asp-area="" asp-controller="Home" asp-action="Index">WebQLPT</a>
+    <div class="app-root d-flex flex-column flex-md-row">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a class="navbar-brand mb-0" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-heart-fill"></i>Phòng Trọ Joy
+                </a>
             </div>
-            <nav class="nav flex-column p-2">
-                <a class="nav-link d-flex align-items-center" asp-controller="Home" asp-action="Index"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
-                <a class="nav-link d-flex align-items-center" asp-controller="KhachThues" asp-action="Index"><i class="bi bi-person-fill me-2"></i>Khách thuê</a>
-                <a class="nav-link d-flex align-items-center" asp-controller="PhongTroes" asp-action="Index"><i class="bi bi-building me-2"></i>Phòng trọ</a>
-                <a class="nav-link d-flex align-items-center" asp-controller="ChuTroes" asp-action="Index"><i class="bi bi-house-fill me-2"></i>Chủ trọ</a>
-                <a class="nav-link d-flex align-items-center" asp-controller="DangTins" asp-action="Index"><i class="bi bi-pencil-square me-2"></i>Đăng tin</a>
-                <a class="nav-link d-flex align-items-center" href="#"><i class="bi bi-chat-left-text me-2"></i>Đánh giá</a>
-                <a class="nav-link d-flex align-items-center" href="#"><i class="bi bi-receipt me-2"></i>Hóa đơn</a>
-                <a class="nav-link d-flex align-items-center" href="#"><i class="bi bi-envelope me-2"></i>Liên hệ</a>
+            <nav class="nav flex-column">
+                <a class="nav-link d-flex align-items-center @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                </a>
+                <a class="nav-link d-flex align-items-center @(ViewContext.RouteData.Values["controller"]?.ToString() == "KhachThues" ? "active" : "")" asp-controller="KhachThues" asp-action="Index">
+                    <i class="bi bi-person-fill me-2"></i>Khách thuê
+                </a>
+                <a class="nav-link d-flex align-items-center @(ViewContext.RouteData.Values["controller"]?.ToString() == "PhongTroes" ? "active" : "")" asp-controller="PhongTroes" asp-action="Index">
+                    <i class="bi bi-building me-2"></i>Phòng trọ
+                </a>
+                <a class="nav-link d-flex align-items-center @(ViewContext.RouteData.Values["controller"]?.ToString() == "ChuTroes" ? "active" : "")" asp-controller="ChuTroes" asp-action="Index">
+                    <i class="bi bi-house-fill me-2"></i>Chủ trọ
+                </a>
+                <a class="nav-link d-flex align-items-center @(ViewContext.RouteData.Values["controller"]?.ToString() == "DangTins" ? "active" : "")" asp-controller="DangTins" asp-action="Index">
+                    <i class="bi bi-pencil-square me-2"></i>Đăng tin
+                </a>
+                <a class="nav-link d-flex align-items-center" href="#">
+                    <i class="bi bi-chat-left-text me-2"></i>Đánh giá
+                </a>
+                <a class="nav-link d-flex align-items-center" href="#">
+                    <i class="bi bi-receipt me-2"></i>Hóa đơn
+                </a>
+                <a class="nav-link d-flex align-items-center" href="#">
+                    <i class="bi bi-envelope me-2"></i>Liên hệ
+                </a>
             </nav>
         </aside>
-        <div class="content flex-fill d-flex flex-column">
-            <header class="topbar bg-white border-bottom">
-                <div class="container-fluid d-flex align-items-center justify-content-between">
+        <div class="content w-100">
+            <header class="topbar">
+                <div class="d-flex align-items-center justify-content-between">
                     @{
                         var controller = ViewContext.RouteData.Values["controller"]?.ToString();
                     }
                     @if (controller == "Home")
-                        {
-                            <form asp-controller="Search" asp-action="Index" method="get" class="d-flex w-50">
-                                <input class="form-control form-control-sm me-2"
-                                type="search"
-                                name="keyword"
-                                placeholder="Tìm kiếm..."
-                                aria-label="Search"
-                                required>
-                                <button class="btn btn-outline-primary btn-sm" type="submit">
-                                    🔍
-                                </button>
-                            </form>
-                        }
-                        else
-                        {
-                            <div></div>
-                        }
-                        <div class="d-flex align-items-center">
-                        <div class="me-3 text-muted small">Xin chào, Admin</div>
-                            <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-person-circle"></i></button>
+                    {
+                        <form asp-controller="Search" asp-action="Index" method="get" class="d-flex flex-grow-1" style="max-width: 400px;">
+                            <div class="input-group">
+                                <input class="form-control form-control-sm"
+                                       type="search"
+                                       name="keyword"
+                                       placeholder="🔍 Tìm kiếm phòng, khách hàng..."
+                                       aria-label="Search">
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <div></div>
+                    }
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="text-muted small">Xin chào, Admin</div>
+                        <button class="btn btn-outline-secondary btn-sm rounded-circle" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-person-circle"></i>
+                        </button>
                     </div>
                 </div>
             </header>
 
-            <main role="main" class="p-4">
+            <main role="main">
                 @RenderBody()
             </main>
-            <footer class="border-top footer text-muted mt-auto">
-                <div class="container">
-                    &copy; 2026 - WebQLPT
-                </div>
+            <footer class="footer">
+                <div>&copy; 2026 - Hệ Thống Quản Lý Phòng Trọ. Bản quyền thuộc WebQLPT.</div>
             </footer>
         </div>
     </div>

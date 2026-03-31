@@ -1,62 +1,62 @@
 ﻿@model WebQLPT.Models.DangTin
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chỉnh Sửa Tin";
 }
 
-<h1>Edit</h1>
+<h1>✏️ Chỉnh Sửa Tin Đăng</h1>
 
-<h4>DangTin</h4>
+<h4>Thông Tin Tin Đăng</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="TieuDe" class="control-label"></label>
+                <label asp-for="TieuDe" class="control-label">Tiêu Đề</label>
                 <input asp-for="TieuDe" class="form-control" />
                 <span asp-validation-for="TieuDe" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="NoiDung" class="control-label"></label>
+                <label asp-for="NoiDung" class="control-label">Nội Dung</label>
                 <input asp-for="NoiDung" class="form-control" />
                 <span asp-validation-for="NoiDung" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Gia" class="control-label"></label>
+                <label asp-for="Gia" class="control-label">Giá</label>
                 <input asp-for="Gia" class="form-control" />
                 <span asp-validation-for="Gia" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="HinhAnh" class="control-label"></label>
+                <label asp-for="HinhAnh" class="control-label">Hình Ảnh</label>
                 <input asp-for="HinhAnh" class="form-control" />
                 <span asp-validation-for="HinhAnh" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="NgayDang" class="control-label"></label>
+                <label asp-for="NgayDang" class="control-label">Ngày Đăng</label>
                 <input asp-for="NgayDang" class="form-control" />
                 <span asp-validation-for="NgayDang" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PhongTroId" class="control-label"></label>
+                <label asp-for="PhongTroId" class="control-label">Phòng Trọ</label>
                 <select asp-for="PhongTroId" class="form-control" asp-items="ViewBag.PhongTroId"></select>
                 <span asp-validation-for="PhongTroId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ChuTroId" class="control-label"></label>
+                <label asp-for="ChuTroId" class="control-label">Chủ Trọ</label>
                 <select asp-for="ChuTroId" class="form-control" asp-items="ViewBag.ChuTroId"></select>
                 <span asp-validation-for="ChuTroId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Lưu Lại" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">← Quay Lại Danh Sách</a>
 </div>
 
 @section Scripts {

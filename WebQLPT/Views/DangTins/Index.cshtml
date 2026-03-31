@@ -1,71 +1,118 @@
 ﻿@model IEnumerable<WebQLPT.Models.DangTin>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Danh Sách Đăng Tin";
 }
 
-<h1>Danh sách bài đăng</h1>
+<div class="page-header">
+    <h1>📝 Danh Sách Đăng Tin</h1>
+    <p>Khám phá các phòng trọ mới từ các chủ trọ uy tín</p>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TieuDe)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NoiDung)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Gia)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.HinhAnh)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NgayDang)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhongTro)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ChuTro)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TieuDe)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NoiDung)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Gia)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.HinhAnh)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NgayDang)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhongTro.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ChuTro.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+<div class="d-flex justify-content-center mb-4">
+    <a asp-action="Create" class="btn-create" style="max-width: 300px;">
+        <i class="bi bi-pencil-square"></i> Đăng Tin Mới
+    </a>
+</div>
+
+@if (Model.Any())
+{
+    <div class="posts-container">
+        @foreach (var item in Model)
+        {
+            <div class="post-card">
+                <!-- Post Header -->
+                <div class="post-header">
+                    <div class="post-author-info">
+                        <div class="post-author-avatar">
+                            @item.ChuTro.TenChuTro.First()
+                        </div>
+                        <div class="post-author-details">
+                            <div class="post-author-name">@item.ChuTro.TenChuTro</div>
+                            <div class="post-meta">@item.NgayDang.ToString("dd/MM/yyyy HH:mm")</div>
+                        </div>
+                    </div>
+                    <button class="post-menu-btn" title="Tùy chọn">
+                        <i class="bi bi-three-dots"></i>
+                    </button>
+                </div>
+
+                <!-- Post Content -->
+                <div class="post-content">
+                    <div class="post-title">@item.TieuDe</div>
+                    <div class="post-description">
+                        @{
+                            var desc = item.NoiDung;
+                            if (desc.Length > 200)
+                            {
+                                <span>@desc.Substring(0, 200)...</span>
+                            }
+                            else
+                            {
+                                <span>@desc</span>
+                            }
+                        }
+                    </div>
+
+                    <!-- Post Image -->
+                    @if (!string.IsNullOrEmpty(item.HinhAnh))
+                    {
+                        <div class="post-image-container">
+                            <img src="@item.HinhAnh" alt="@item.TieuDe" class="post-image">
+                        </div>
+                    }
+
+                    <!-- Post Meta Info -->
+                    <div class="post-meta-info">
+                        <div class="post-meta-item">
+                            <div class="post-meta-label">💰 Giá Thuê</div>
+                            <div class="post-meta-value">@item.Gia.ToString("N0") VNĐ</div>
+                        </div>
+                        <div class="post-meta-item">
+                            <div class="post-meta-label">🏠 Phòng Trọ</div>
+                            <div class="post-meta-value">@item.PhongTro.TenPhong</div>
+                        </div>
+                        <div class="post-meta-item">
+                            <div class="post-meta-label">📍 Trạng Thái</div>
+                            <div class="post-meta-value">
+                                @{
+                                    var statusClass = item.PhongTro.TrangThai == "Trống" ? "bg-success" : item.PhongTro.TrangThai == "Đã cho thuê" ? "bg-warning" : "bg-danger";
+                                }
+                                <span class="badge @statusClass">@item.PhongTro.TrangThai</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Post Footer (Actions) -->
+                <div class="post-footer">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="post-action" title="Xem chi tiết">
+                        <i class="bi bi-eye"></i>
+                        <span>Xem Chi Tiết</span>
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="post-action" title="Chỉnh sửa">
+                        <i class="bi bi-pencil"></i>
+                        <span>Chỉnh Sửa</span>
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="post-action" title="Xóa">
+                        <i class="bi bi-trash"></i>
+                        <span>Xóa</span>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="posts-container">
+        <div class="posts-empty">
+            <div class="posts-empty-icon">📭</div>
+            <div class="posts-empty-title">Chưa có đăng tin nào</div>
+            <div class="posts-empty-text mb-3">Hãy đăng tin mới để chia sẻ phòng trọ của bạn với mọi người</div>
+            <a asp-action="Create" class="btn-create">
+                <i class="bi bi-pencil-square"></i> Đăng Tin Mới
+            </a>
+        </div>
+    </div>
+}
