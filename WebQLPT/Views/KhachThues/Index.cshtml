@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebQLPT.Models.KhachThue>
+﻿@model WebQLPT.Models.TenantListViewModel
 
 @{
     ViewData["Title"] = "Quản Lý Khách Thuê";
@@ -10,9 +10,12 @@
 </div>
 
 <div class="d-flex justify-content-between align-items-center mb-3 gap-2">
-    <a asp-action="Create" class="btn-create">
-        <i class="bi bi-person-plus"></i> Thêm Khách Mới
-    </a>
+    @if (User.IsInRole("Admin") || User.IsInRole("ChuTro"))
+    {
+        <a asp-action="Create" class="btn-create">
+            <i class="bi bi-person-plus"></i> Thêm Khách Mới
+        </a>
+    }
 </div>
 
 <div class="search-bar">
@@ -24,7 +27,56 @@
     </form>
 </div>
 
-@if (Model.Any())
+<h4>Người dùng đã đăng ký (Khách thuê)</h4>
+@if (Model.RegisteredUsers.Any())
+{
+    <div class="table-container mb-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Họ & Tên</th>
+                    <th>Email</th>
+                    <th>SDT</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model.RegisteredUsers)
+                {
+                    <tr>
+                        <td><strong>@(u.FullName ?? u.UserName)</strong></td>
+                        <td>@u.Email</td>
+                        <td>@u.PhoneNumber</td>
+                        <td>
+                            <div class="btn-action">
+                                @if ((User.IsInRole("Admin") || User.IsInRole("ChuTro")) && Model.RegisteredUserCanAssign.ContainsKey(u.Id) && Model.RegisteredUserCanAssign[u.Id])
+                                {
+                                    <a asp-action="Create" asp-route-userId="@u.Id" class="btn btn-sm btn-outline-primary">Gán phòng</a>
+                                }
+                                @* Only Admin can assign ChuTro role *@
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <form asp-controller="ChuTroRequests" asp-action="Assign" method="post" style="display:inline-block; margin-left:6px;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="userId" value="@u.Id" />
+                                        <button type="submit" class="btn btn-sm btn-warning">Gán Chủ trọ</button>
+                                    </form>
+                                }
+                                @if (Model.CurrentUserId == u.Id)
+                                {
+                                    <a asp-action="Create" class="btn btn-sm btn-success">Tạo hồ sơ thuê</a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<h4>Bản ghi khách thuê (thủ công)</h4>
+@if (Model.ManualTenants.Any())
 {
     <div class="table-container">
         <table class="table">
@@ -34,41 +86,34 @@
                     <th>Số Điện Thoại</th>
                     <th>CCCD</th>
                     <th>Ngày Thuê</th>
-                    <th>Phòng Trọ</th>
-                    <th>Hành Động</th>
+                    <th>Phòng</th>
+                    <th>Hành động</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var item in Model.ManualTenants)
                 {
                     <tr>
+                        <td><strong>@item.TenKhach</strong></td>
+                        <td><a href="tel:@item.SoDienThoai">@item.SoDienThoai</a></td>
+                        <td><span class="badge bg-secondary">@item.CCCD</span></td>
+                        <td>@item.NgayThue.ToString("dd/MM/yyyy")</td>
                         <td>
-                            <strong>@item.TenKhach</strong>
-                        </td>
-                        <td>
-                            <a href="tel:@item.SoDienThoai">@item.SoDienThoai</a>
-                        </td>
-                        <td>
-                            <span class="badge bg-secondary">@item.CCCD</span>
-                        </td>
-                        <td>
-                            <span>@item.NgayThue.ToString("dd/MM/yyyy")</span>
-                        </td>
-                        <td>
-                            <span class="badge bg-info">@item.PhongTro?.TenPhong</span>
-                        </td>
-                        <td>
-                            <div class="btn-action">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn-edit" title="Chỉnh sửa">
-                                    <i class="bi bi-pencil"></i> Sửa
+                            @if (item.PhongTro != null)
+                            {
+                                <a asp-action="RoomDetails" asp-route-id="@item.Id" class="badge bg-info" style="text-decoration: none; cursor: pointer;">
+                                    @item.PhongTro.TenPhong
                                 </a>
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn-detail" title="Xem chi tiết">
-                                    <i class="bi bi-eye"></i> Chi tiết
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn-delete" title="Xóa">
-                                    <i class="bi bi-trash"></i> Xóa
-                                </a>
-                            </div>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">-</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Sửa</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Chi tiết</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Xóa</a>
                         </td>
                     </tr>
                 }
@@ -83,9 +128,12 @@ else
             <div class="empty-state-icon">📭</div>
             <div class="empty-state-title">Không có khách thuê nào</div>
             <div class="empty-state-text">Hãy thêm khách thuê mới để bắt đầu quản lý</div>
-            <a asp-action="Create" class="btn-create">
-                <i class="bi bi-person-plus"></i> Thêm Khách Mới
-            </a>
+            @if (User.IsInRole("Admin") || User.IsInRole("ChuTro"))
+            {
+                <a asp-action="Create" class="btn-create">
+                    <i class="bi bi-person-plus"></i> Thêm Khách Mới
+                </a>
+            }
         </div>
     </div>
 }

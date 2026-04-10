@@ -11,7 +11,7 @@ namespace WebQLPT.Models
         public string TenKhach { get; set; }
 
         [Display(Name = "Số điện thoại")]
-        public string SoDienThoai { get; set; }
+        public string? SoDienThoai { get; set; }
 
         public string CCCD { get; set; }
 
@@ -20,6 +20,12 @@ namespace WebQLPT.Models
 
         [Display(Name = "ID Phòng")]
         public int PhongTroId { get; set; }
+
+        // Link to application user who created this tenant record
+        public string? UserId { get; set; }
+
+        [ValidateNever]
+        public ApplicationUser? User { get; set; }
 
         [ValidateNever]
         public PhongTro PhongTro { get; set; }

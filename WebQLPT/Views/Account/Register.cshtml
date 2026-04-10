@@ -1,0 +1,64 @@
+@model WebQLPT.Controllers.AccountController.RegisterViewModel
+@{
+    ViewData["Title"] = "Đăng ký";
+}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">Tạo tài khoản</h3>
+
+                    <form asp-action="Register" method="post" novalidate>
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="FullName" class="form-label"></label>
+                            <input asp-for="FullName" class="form-control" />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Password" class="form-label"></label>
+                                <input asp-for="Password" class="form-control" type="password" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ConfirmPassword" class="form-label"></label>
+                                <input asp-for="ConfirmPassword" class="form-control" type="password" />
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Role" class="form-label">Bạn là</label>
+                            <select asp-for="Role" class="form-select">
+                                <option value="KhachThue">Khách thuê</option>
+                                <option value="ChuTro">Chủ trọ</option>
+                            </select>
+                            <span asp-validation-for="Role" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">Đăng ký</button>
+                        </div>
+                    </form>
+
+                    <div class="mt-3 text-center">
+                        <small>Bạn đã có tài khoản? <a asp-controller="Account" asp-action="Login">Đăng nhập</a></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_ValidationScriptsPartial" />

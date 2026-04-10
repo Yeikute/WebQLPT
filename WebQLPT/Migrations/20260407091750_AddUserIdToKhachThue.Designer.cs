@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebQLPT.Data;
 
@@ -11,9 +12,11 @@ using WebQLPT.Data;
 namespace WebQLPT.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260407091750_AddUserIdToKhachThue")]
+    partial class AddUserIdToKhachThue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -343,6 +346,7 @@ namespace WebQLPT.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("SoDienThoai")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenKhach")
@@ -350,6 +354,7 @@ namespace WebQLPT.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -515,7 +520,9 @@ namespace WebQLPT.Migrations
 
                     b.HasOne("WebQLPT.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("PhongTro");
 

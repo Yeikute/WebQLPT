@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WebQLPT.Data;
 using WebQLPT.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebQLPT.Controllers
 {
@@ -14,6 +15,7 @@ namespace WebQLPT.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Admin,ChuTro")]
         public IActionResult Index()
         {
             ViewBag.SoPhong = _context.PhongTros.Count();

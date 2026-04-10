@@ -66,6 +66,18 @@
             z-index: 1000;
         }
 
+        /* slide-in animation: sidebar starts off-screen and fades in */
+        .sidebar {
+            transform: translateX(-320px);
+            opacity: 0;
+            transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 320ms ease;
+        }
+
+        .sidebar.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
         .sidebar::-webkit-scrollbar {
             width: 6px;
         }
@@ -177,6 +189,11 @@
             flex-direction: column;
         }
 
+        /* when sidebar is hidden */
+        .content.no-sidebar {
+            margin-left: 0;
+        }
+
         /* ===== TOPBAR ===== */
         .topbar {
             background: rgba(255, 255, 255, 0.95);
@@ -253,28 +270,45 @@
 </head>
 <body>
     <div class="app-root d-flex flex-column flex-md-row">
-        <aside class="sidebar">
+        @if (User?.Identity?.IsAuthenticated ?? false)
+        {
+            <aside class="sidebar">
             <div class="sidebar-header">
                 <a class="navbar-brand mb-0" asp-area="" asp-controller="Home" asp-action="Index">
                     <i class="bi bi-heart-fill"></i>Phòng Trọ Joy
                 </a>
             </div>
             <nav class="nav flex-column">
-                <a class="nav-link d-flex align-items-center @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-speedometer2 me-2"></i>Dashboard
-                </a>
-                <a class="nav-link d-flex align-items-center @(ViewContext.RouteData.Values["controller"]?.ToString() == "KhachThues" ? "active" : "")" asp-controller="KhachThues" asp-action="Index">
-                    <i class="bi bi-person-fill me-2"></i>Khách thuê
-                </a>
-                <a class="nav-link d-flex align-items-center @(ViewContext.RouteData.Values["controller"]?.ToString() == "PhongTroes" ? "active" : "")" asp-controller="PhongTroes" asp-action="Index">
-                    <i class="bi bi-building me-2"></i>Phòng trọ
-                </a>
-                <a class="nav-link d-flex align-items-center @(ViewContext.RouteData.Values["controller"]?.ToString() == "ChuTroes" ? "active" : "")" asp-controller="ChuTroes" asp-action="Index">
-                    <i class="bi bi-house-fill me-2"></i>Chủ trọ
-                </a>
-                <a class="nav-link d-flex align-items-center @(ViewContext.RouteData.Values["controller"]?.ToString() == "DangTins" ? "active" : "")" asp-controller="DangTins" asp-action="Index">
-                    <i class="bi bi-pencil-square me-2"></i>Đăng tin
-                </a>
+                @if (User.IsInRole("Admin") || User.IsInRole("ChuTro"))
+                {
+                    <a class="nav-link d-flex align-items-center @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                    </a>
+                }
+                @if (User.IsInRole("Admin") || User.IsInRole("ChuTro"))
+                {
+                    <a class="nav-link d-flex align-items-center @(ViewContext.RouteData.Values["controller"]?.ToString() == "KhachThues" ? "active" : "")" asp-controller="KhachThues" asp-action="Index">
+                        <i class="bi bi-person-fill me-2"></i>Khách thuê
+                    </a>
+                }
+                @if (User.IsInRole("Admin") || User.IsInRole("ChuTro") || User.IsInRole("KhachThue"))
+                {
+                    <a class="nav-link d-flex align-items-center @(ViewContext.RouteData.Values["controller"]?.ToString() == "PhongTroes" ? "active" : "")" asp-controller="PhongTroes" asp-action="Index">
+                        <i class="bi bi-building me-2"></i>Phòng trọ
+                    </a>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="nav-link d-flex align-items-center @(ViewContext.RouteData.Values["controller"]?.ToString() == "ChuTroes" ? "active" : "")" asp-controller="ChuTroes" asp-action="Index">
+                        <i class="bi bi-house-fill me-2"></i>Chủ trọ
+                    </a>
+                }
+                @if (User.IsInRole("Admin") || User.IsInRole("ChuTro") || User.IsInRole("KhachThue"))
+                {
+                    <a class="nav-link d-flex align-items-center @(ViewContext.RouteData.Values["controller"]?.ToString() == "DangTins" ? "active" : "")" asp-controller="DangTins" asp-action="Index">
+                        <i class="bi bi-pencil-square me-2"></i>Đăng tin
+                    </a>
+                }
                 <a class="nav-link d-flex align-items-center" href="#">
                     <i class="bi bi-chat-left-text me-2"></i>Đánh giá
                 </a>
@@ -285,36 +319,63 @@
                     <i class="bi bi-envelope me-2"></i>Liên hệ
                 </a>
             </nav>
-        </aside>
-        <div class="content w-100">
+            </aside>
+        }
+        <div class="content w-100 @(User?.Identity?.IsAuthenticated ?? false ? "" : "no-sidebar")">
             <header class="topbar">
-                <div class="d-flex align-items-center justify-content-between">
-                    @{
-                        var controller = ViewContext.RouteData.Values["controller"]?.ToString();
-                    }
-                    @if (controller == "Home")
-                    {
-                        <form asp-controller="Search" asp-action="Index" method="get" class="d-flex flex-grow-1" style="max-width: 400px;">
-                            <div class="input-group">
-                                <input class="form-control form-control-sm"
-                                       type="search"
-                                       name="keyword"
-                                       placeholder="🔍 Tìm kiếm phòng, khách hàng..."
-                                       aria-label="Search">
+                @if (User?.Identity?.IsAuthenticated ?? false)
+                {
+                    <div class="d-flex align-items-center justify-content-between">
+                        @{ var controller = ViewContext.RouteData.Values["controller"]?.ToString(); }
+                        @if (controller == "Home")
+                        {
+                            <form asp-controller="Search" asp-action="Index" method="get" class="d-flex flex-grow-1" style="max-width: 400px;">
+                                <div class="input-group">
+                                    <input class="form-control form-control-sm" type="search" name="keyword" placeholder="🔍 Tìm kiếm phòng, khách hàng..." aria-label="Search">
+                                </div>
+                            </form>
+                        }
+                        else
+                        {
+                            <div></div>
+                        }
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle d-flex align-items-center" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-circle me-2"></i>
+                                    <span class="small">@User.Identity.Name</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Register">Hồ sơ</a></li>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index">Admin panel</a></li>
+                                    }
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post" class="px-3 py-2">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-link text-danger p-0">Đăng xuất</button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </div>
-                        </form>
-                    }
-                    else
-                    {
-                        <div></div>
-                    }
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="text-muted small">Xin chào, Admin</div>
-                        <button class="btn btn-outline-secondary btn-sm rounded-circle" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
-                            <i class="bi bi-person-circle"></i>
-                        </button>
+                        </div>
                     </div>
-                </div>
+                }
+                else
+                {
+                    <div class="d-flex align-items-center justify-content-between px-4">
+                        <a class="navbar-brand mb-0" asp-area="" asp-controller="Home" asp-action="Index" style="display:flex; align-items:center; gap:.5rem; color:var(--primary); font-weight:700;">
+                            <i class="bi bi-heart-fill" style="font-size:1.2rem; color:var(--primary)"></i>
+                            <span>Phòng Trọ Joy</span>
+                        </a>
+                        <div>
+                            <a class="btn btn-outline-primary btn-sm me-2" asp-controller="Account" asp-action="Auth">Đăng nhập</a>
+                            <a class="btn btn-primary btn-sm" asp-controller="Account" asp-action="Auth">Đăng ký</a>
+                        </div>
+                    </div>
+                }
             </header>
 
             <main role="main">
@@ -326,10 +387,62 @@
         </div>
     </div>
 
+    <!-- Toast container -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 2000;">
+        @if (TempData["Success"] != null)
+        {
+            <div class="toast align-items-center text-bg-success border-0" role="alert" aria-live="polite" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        @TempData["Success"]
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="polite" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        @TempData["Error"]
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+    </div>
+
    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        $(function () {
+            try {
+                var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+                toastElList.forEach(function (toastEl) {
+                    var toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+                    toast.show();
+                });
+            } catch (e) {
+                console && console.error(e);
+            }
+        });
+    </script>
+    <script>
+        // slide-in sidebar when it exists
+        document.addEventListener('DOMContentLoaded', function () {
+            try {
+                var sb = document.querySelector('.sidebar');
+                if (sb) {
+                    // use requestAnimationFrame so transition runs
+                    requestAnimationFrame(function () { sb.classList.add('show'); });
+                }
+            } catch (e) { console && console.error(e); }
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

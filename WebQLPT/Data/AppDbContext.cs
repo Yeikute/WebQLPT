@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using WebQLPT.Models;
 
 namespace WebQLPT.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
@@ -14,6 +15,8 @@ namespace WebQLPT.Data
         public DbSet<KhachThue> KhachThues { get; set; }
         public DbSet<ChuTro> ChuTros { get; set; }
         public DbSet<DangTin> DangTins { get; set; }
+        public DbSet<Payment> Payments { get; set; }
+        public DbSet<ChuTroRequest> ChuTroRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

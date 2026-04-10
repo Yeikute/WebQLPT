@@ -10,9 +10,12 @@
 </div>
 
 <div class="d-flex justify-content-between align-items-center mb-3 gap-2">
-    <a asp-action="Create" class="btn-create">
-        <i class="bi bi-plus-circle"></i> Thêm Phòng Mới
-    </a>
+    @if (User.IsInRole("Admin") || User.IsInRole("ChuTro"))
+    {
+        <a asp-action="Create" class="btn-create">
+            <i class="bi bi-plus-circle"></i> Thêm Phòng Mới
+        </a>
+    }
 </div>
 
 <div class="search-bar">
@@ -46,7 +49,7 @@
                             <strong>@Html.DisplayFor(modelItem => item.TenPhong)</strong>
                         </td>
                         <td>
-                            <span class="badge bg-success">@Html.DisplayFor(modelItem => item.Gia):,0</span>
+                            <span class="badge bg-success">@item.Gia.ToString("N0")</span>
                         </td>
                         <td>
                             @{
@@ -56,7 +59,7 @@
                         </td>
                         <td>
                             @{
-                                var moTa = Html.DisplayFor(modelItem => item.MoTa).ToString();
+                                var moTa = item.MoTa ?? string.Empty;
                                 if (moTa.Length > 50)
                                 {
                                     <span title="@moTa">@moTa.Substring(0, 50)...</span>
@@ -70,15 +73,24 @@
                         <td>@Html.DisplayFor(modelItem => item.ChuTro.TenChuTro)</td>
                         <td>
                             <div class="btn-action">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn-edit" title="Chỉnh sửa">
-                                    <i class="bi bi-pencil"></i> Sửa
-                                </a>
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn-detail" title="Xem chi tiết">
                                     <i class="bi bi-eye"></i> Chi tiết
                                 </a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn-delete" title="Xóa">
-                                    <i class="bi bi-trash"></i> Xóa
-                                </a>
+
+                                @if (User.IsInRole("Admin") || User.IsInRole("ChuTro"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn-edit" title="Chỉnh sửa">
+                                        <i class="bi bi-pencil"></i> Sửa
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-delete" title="Xóa">
+                                        <i class="bi bi-trash"></i> Xóa
+                                    </a>
+                                }
+
+                                @if (User.IsInRole("KhachThue") && item.TrangThai == "Trống")
+                                {
+                                    <a asp-action="Rent" asp-route-id="@item.Id" class="btn btn-sm btn-success">Thuê</a>
+                                }
                             </div>
                         </td>
                     </tr>
