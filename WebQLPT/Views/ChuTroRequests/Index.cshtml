@@ -1,0 +1,50 @@
+@model IEnumerable<WebQLPT.Models.ChuTroRequest>
+@{
+    ViewData["Title"] = "Yêu cầu Chủ trọ";
+}
+<div class="container py-4">
+    <h3>Yêu cầu muốn trở thành Chủ trọ</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Người dùng</th>
+                <th>Email</th>
+                <th>Trạng thái</th>
+                <th>Ngày gửi</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@r.Id</td>
+                    <td>@(r.User?.FullName ?? r.UserId)</td>
+                    <td>@(r.User?.Email)</td>
+                    <td>@r.Status</td>
+                    <td>@r.CreatedAt</td>
+                    <td>
+                        @if (r.Status == "Pending")
+                        {
+                            <form asp-action="Approve" method="post" style="display:inline-block;">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@r.Id" />
+                                <button class="btn btn-sm btn-success" type="submit">Phê duyệt</button>
+                            </form>
+                            <form asp-action="Reject" method="post" style="display:inline-block; margin-left:6px;">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@r.Id" />
+                                <button class="btn btn-sm btn-danger" type="submit">Từ chối</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted">-</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

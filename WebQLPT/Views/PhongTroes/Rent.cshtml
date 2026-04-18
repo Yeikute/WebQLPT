@@ -1,0 +1,27 @@
+@model WebQLPT.Models.PhongTro
+
+@{
+    ViewData["Title"] = "Thuê phòng";
+}
+
+<div class="container py-4">
+    <h3>Thuê phòng: @Model.TenPhong</h3>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <p><strong>Giá:</strong> @Model.Gia.ToString("N0") VND</p>
+            <p><strong>Chủ trọ:</strong> @Model.ChuTro?.TenChuTro</p>
+            <p><strong>Mô tả:</strong> @Model.MoTa</p>
+            <p><strong>Trạng thái:</strong> <span class="badge bg-info">@Model.TrangThai</span></p>
+        </div>
+    </div>
+
+    <form asp-action="RentConfirmed" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.Id" />
+        <div class="d-flex gap-2">
+            <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            <button type="submit" class="btn btn-primary">Xác nhận thuê</button>
+        </div>
+    </form>
+</div>

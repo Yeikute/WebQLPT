@@ -246,10 +246,10 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('previewAuthor').textContent = option.text || 'Chủ trọ';
     });
 
-    // Add is-invalid class khi validation fail
+    // Add is-invalid class khi validation fail (skip imageFile)
     const form = document.getElementById('createForm');
     if (form) {
-        const inputs = form.querySelectorAll('input, textarea, select');
+        const inputs = form.querySelectorAll('input:not(#imageFile), textarea, select');
         inputs.forEach(input => {
             const feedback = input.parentElement.querySelector('.invalid-feedback');
             if (feedback && feedback.textContent.trim()) {
@@ -262,18 +262,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
-        // Disable validation for imageFile (optional field)
-        $(document).ready(function () {
-            const form = document.getElementById('createForm');
-            if (form) {
-                // Remove any validation rules for imageFile
-                const imageFileInput = document.getElementById('imageFile');
-                if (imageFileInput) {
-                    imageFileInput.removeAttribute('data-val');
-                    imageFileInput.removeAttribute('data-val-required');
-                }
-            }
-        });
-    </script>
 }

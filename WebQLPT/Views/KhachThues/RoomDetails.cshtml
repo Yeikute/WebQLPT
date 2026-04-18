@@ -1,0 +1,238 @@
+@model WebQLPT.Models.KhachThue
+
+@{
+    ViewData["Title"] = "Chi Tiết Phòng Thuê";
+}
+
+<div class="page-header">
+    <h1>🏠 Chi Tiết Phòng Thuê</h1>
+    <p>Thông tin chi tiết về phòng bạn đã thuê</p>
+</div>
+
+<div class="details-container">
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Thông tin phòng -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-house"></i> Thông Tin Phòng
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.PhongTro != null)
+                    {
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Tên Phòng:</strong>
+                                <p>@Model.PhongTro.TenPhong</p>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Giá Thuê:</strong>
+                                <p class="text-success fs-5"><strong>@Model.PhongTro.Gia.ToString("N0") đ/tháng</strong></p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Trạng Thái:</strong>
+                                <p>
+                                    @if (Model.PhongTro.TrangThai == "Trống")
+                                    {
+                                        <span class="badge bg-success">Trống</span>
+                                    }
+                                    else if (Model.PhongTro.TrangThai == "Đã thuê")
+                                    {
+                                        <span class="badge bg-warning text-dark">Đã thuê</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">@Model.PhongTro.TrangThai</span>
+                                    }
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Mô Tả:</strong>
+                                <p>@(string.IsNullOrEmpty(Model.PhongTro.MoTa) ? "Không có mô tả" : Model.PhongTro.MoTa)</p>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Không có thông tin phòng</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Thông tin chủ trọ -->
+            @if (Model.PhongTro?.ChuTro != null)
+            {
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-person"></i> Thông Tin Chủ Trọ
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Tên Chủ Trọ:</strong>
+                                <p>@Model.PhongTro.ChuTro.TenChuTro</p>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Email:</strong>
+                                <p>
+                                    <a href="mailto:@Model.PhongTro.ChuTro.Email">@Model.PhongTro.ChuTro.Email</a>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Số Điện Thoại:</strong>
+                                <p>
+                                    @if (!string.IsNullOrEmpty(Model.PhongTro.ChuTro.SoDienThoai))
+                                    {
+                                        <a href="tel:@Model.PhongTro.ChuTro.SoDienThoai">@Model.PhongTro.ChuTro.SoDienThoai</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Địa Chỉ:</strong>
+                                <p>@(string.IsNullOrEmpty(Model.PhongTro.ChuTro.DiaChi) ? "-" : Model.PhongTro.ChuTro.DiaChi)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Thông tin hợp đồng thuê -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-file-earmark-text"></i> Thông Tin Hợp Đồng Thuê
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Tên Khách Thuê:</strong>
+                            <p>@Model.TenKhach</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Số Điện Thoại:</strong>
+                            <p>
+                                @if (!string.IsNullOrEmpty(Model.SoDienThoai))
+                                {
+                                    <a href="tel:@Model.SoDienThoai">@Model.SoDienThoai</a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>CCCD:</strong>
+                            <p>@(string.IsNullOrEmpty(Model.CCCD) ? "-" : Model.CCCD)</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Ngày Bắt Đầu Thuê:</strong>
+                            <p>@Model.NgayThue.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar actions -->
+        <div class="col-md-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-gear"></i> Hành Động
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <a href="javascript:history.back()" class="btn btn-secondary w-100 mb-2">
+                        <i class="bi bi-arrow-left"></i> Quay Lại
+                    </a>
+                    @if (User.IsInRole("KhachThue") || User.IsInRole("Admin") || User.IsInRole("ChuTro"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary w-100 mb-2">
+                            <i class="bi bi-pencil"></i> Chỉnh Sửa Thông Tin
+                        </a>
+                    }
+                    @if (User.IsInRole("Admin") || User.IsInRole("ChuTro"))
+                    {
+                        <a asp-controller="PhongTroes" asp-action="Details" asp-route-id="@Model.PhongTroId" class="btn btn-info w-100">
+                            <i class="bi bi-building"></i> Xem Thông Tin Phòng
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-telephone"></i> Liên Hệ
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.PhongTro?.ChuTro != null)
+                    {
+                        <p class="mb-2">
+                            <strong>Chủ Trọ:</strong><br>
+                            @if (!string.IsNullOrEmpty(Model.PhongTro.ChuTro.SoDienThoai))
+                            {
+                                <a href="tel:@Model.PhongTro.ChuTro.SoDienThoai" class="btn btn-sm btn-outline-primary w-100">
+                                    <i class="bi bi-telephone"></i> Gọi Chủ Trọ
+                                </a>
+                            }
+                            <a href="mailto:@Model.PhongTro.ChuTro.Email" class="btn btn-sm btn-outline-success w-100 mt-2">
+                                <i class="bi bi-envelope"></i> Gửi Email
+                            </a>
+                        </p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .details-container {
+        margin-top: 20px;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-bottom: none;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .card-title {
+        color: white;
+    }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+</style>

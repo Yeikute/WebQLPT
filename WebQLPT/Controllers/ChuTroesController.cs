@@ -53,6 +53,7 @@ namespace WebQLPT.Controllers
         }
 
         // GET: ChuTroes/Create
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -63,6 +64,7 @@ namespace WebQLPT.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Id,TenChuTro,SoDienThoai,Email,DiaChi")] ChuTro chuTro)
         {
             if (!ModelState.IsValid)
@@ -71,16 +73,18 @@ namespace WebQLPT.Controllers
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage);
 
-                return Content("Lỗi: " + string.Join(" | ", errors));
+                TempData["Error"] = "Lỗi: " + string.Join(" | ", errors);
+                return View(chuTro);
             }
 
             _context.Add(chuTro);
             await _context.SaveChangesAsync();
-
+            TempData["Success"] = "Thêm chủ trọ thành công.";
             return RedirectToAction(nameof(Index));
         }
 
         // GET: ChuTroes/Edit/5
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -101,6 +105,7 @@ namespace WebQLPT.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,TenChuTro,SoDienThoai,Email,DiaChi")] ChuTro chuTro)
         {
             if (id != chuTro.Id)
@@ -114,8 +119,10 @@ namespace WebQLPT.Controllers
                 {
                     _context.Update(chuTro);
                     await _context.SaveChangesAsync();
+                    TempData["Success"] = "Cập nhật chủ trọ thành công.";
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
                     if (!ChuTroExists(chuTro.Id))
                     {
@@ -123,15 +130,24 @@ namespace WebQLPT.Controllers
                     }
                     else
                     {
+                        TempData["Error"] = "Lỗi khi cập nhật: " + ex.Message;
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    TempData["Error"] = "Lỗi khi cập nhật: " + ex.Message;
+                    return View(chuTro);
+                }
             }
+
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+            TempData["Error"] = "Lỗi: " + string.Join(" | ", errors);
             return View(chuTro);
         }
 
         // GET: ChuTroes/Delete/5
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -152,6 +168,7 @@ namespace WebQLPT.Controllers
         // POST: ChuTroes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var chuTro = await _context.ChuTros.FindAsync(id);
@@ -161,6 +178,7 @@ namespace WebQLPT.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Xóa chủ trọ thành công.";
             return RedirectToAction(nameof(Index));
         }
 

@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebQLPT.Data;
 using WebQLPT.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebQLPT.Controllers
 {
@@ -51,6 +55,7 @@ namespace WebQLPT.Controllers
         }
 
         // GET: DangTins/Create
+        [Authorize(Roles = "ChuTro,Admin")]
         public IActionResult Create()
         {
             ViewBag.PhongTroId = new SelectList(_context.PhongTros, "Id", "TenPhong");
@@ -62,6 +67,7 @@ namespace WebQLPT.Controllers
         // POST: DangTins/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "ChuTro,Admin")]
         public async Task<IActionResult> Create([Bind("Id,TieuDe,NoiDung,Gia,PhongTroId,ChuTroId")] DangTin dangTin, IFormFile? imageFile)
         {
             if (ModelState.IsValid)
@@ -87,11 +93,13 @@ namespace WebQLPT.Controllers
                     _context.Add(dangTin);
                     await _context.SaveChangesAsync();
 
+                    TempData["Success"] = "Đăng tin thành công.";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
                     ModelState.AddModelError("", $"Lỗi: {ex.Message}");
+                    TempData["Error"] = "Đăng tin thất bại. Vui lòng thử lại.";
                     LoadSelectLists(dangTin);
                     return View(dangTin);
                 }
@@ -102,6 +110,7 @@ namespace WebQLPT.Controllers
         }
 
         // GET: DangTins/Edit/5
+        [Authorize(Roles = "ChuTro,Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -122,6 +131,7 @@ namespace WebQLPT.Controllers
         // POST: DangTins/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "ChuTro,Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,TieuDe,NoiDung,Gia,HinhAnh,NgayDang,PhongTroId,ChuTroId")] DangTin dangTin, IFormFile? imageFile)
         {
             if (id != dangTin.Id)
@@ -156,6 +166,7 @@ namespace WebQLPT.Controllers
 
                     _context.Update(dangTin);
                     await _context.SaveChangesAsync();
+                    TempData["Success"] = "Cập nhật bài đăng thành công.";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
@@ -172,6 +183,7 @@ namespace WebQLPT.Controllers
                 catch (Exception ex)
                 {
                     ModelState.AddModelError("", $"Lỗi: {ex.Message}");
+                    TempData["Error"] = "Cập nhật bài đăng thất bại.";
                 }
             }
             ViewData["ChuTroId"] = new SelectList(_context.ChuTros, "Id", "TenChuTro", dangTin.ChuTroId);
@@ -180,6 +192,7 @@ namespace WebQLPT.Controllers
         }
 
         // GET: DangTins/Delete/5
+        [Authorize(Roles = "ChuTro,Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -202,6 +215,7 @@ namespace WebQLPT.Controllers
         // POST: DangTins/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "ChuTro,Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var dangTin = await _context.DangTins.FindAsync(id);
@@ -217,6 +231,7 @@ namespace WebQLPT.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Xóa bài đăng thành công.";
             return RedirectToAction(nameof(Index));
         }
 

@@ -15,6 +15,18 @@
 
         <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
+        @if (ViewBag.SelectedUser != null)
+        {
+            <div class="mb-3">
+                <label class="form-label">Người dùng</label>
+                <div class="p-2 border rounded">
+                    <strong>@(ViewBag.SelectedUser.FullName ?? ViewBag.SelectedUser.UserName)</strong>
+                    <div class="text-muted">@ViewBag.SelectedUser.Email</div>
+                </div>
+            </div>
+            <input type="hidden" asp-for="UserId" />
+        }
+
         <div class="form-group">
             <label asp-for="TenKhach">
                 Tên Khách Thuê
