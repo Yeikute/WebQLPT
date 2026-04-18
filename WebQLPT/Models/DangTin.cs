@@ -21,7 +21,7 @@ namespace WebQLPT.Models
         public decimal Gia { get; set; }
 
         [Display(Name = "Hình ảnh")]
-        public string HinhAnh { get; set; }
+        public string? HinhAnh { get; set; }
 
         [Display(Name = "Ngày đăng")]
         public DateTime NgayDang { get; set; } = DateTime.Now;

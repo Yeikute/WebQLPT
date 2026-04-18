@@ -4,8 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.Data.SqlClient;
-using System.Threading;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,43 +18,34 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new AuthorizeFilter(policy));
 });
 
-// Try SQL Server first; if unreachable, fall back to a local SQLite file for persistence
+// Configure DbContext with SQL Server (recommended for production)
+// If SQL Server is not available, ensure it's properly configured or use SQLite as fallback
 var defaultConn = builder.Configuration.GetConnectionString("DefaultConnection");
-var useSqlite = false;
-if (string.IsNullOrEmpty(defaultConn))
-{
-    useSqlite = true;
-}
-else
-{
-    try
-    {
-        // quick connectivity check
-        using var sqlConn = new SqlConnection(defaultConn);
-        var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
-        sqlConn.OpenAsync(cts.Token).GetAwaiter().GetResult();
-        sqlConn.Close();
-    }
-    catch (Exception)
-    {
-        useSqlite = true;
-    }
-}
+var sqlitePathConfig = builder.Configuration["Sqlite:File"] ?? "Data/webqlpt.db";
 
-if (!useSqlite)
+if (!string.IsNullOrEmpty(defaultConn) && defaultConn.Contains("SQLEXPRESS"))
 {
-    builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
-        defaultConn,
-        sqlOptions => sqlOptions.EnableRetryOnFailure(
-            maxRetryCount: 5,
-            maxRetryDelay: TimeSpan.FromSeconds(10),
-            errorNumbersToAdd: null)));
+    // Use SQL Server if connection string is configured
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        options.UseSqlServer(
+            defaultConn,
+            sqlOptions => sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(10),
+                errorNumbersToAdd: null));
+    });
+
+    Console.WriteLine("✅ Database: SQL Server (SQLEXPRESS)");
 }
 else
 {
-    var sqlitePath = builder.Configuration["Sqlite:File"] ?? "Data/webqlpt.db";
+    // Fallback to SQLite only if no SQL Server connection string
     builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseSqlite($"Data Source={sqlitePath}"));
+        options.UseSqlite($"Data Source={sqlitePathConfig}"));
+
+    Console.WriteLine($"⚠️  Database: SQLite ({sqlitePathConfig})");
+    Console.WriteLine("ℹ️  Tip: Configure SQL Server connection in appsettings.json for production use.");
 }
 
 // Identity
